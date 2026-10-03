@@ -358,10 +358,10 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <!-- auth panel -->
   <section class="panel auth-panel" id="authPanel">
     <div class="auth-head">
-      <div><div class="auth-title" id="authTitle">账号登录</div><div class="auth-desc" id="authDesc">请输入您的账号和密码登录。</div></div>
-      <div class="tabs" role="tablist" style="display:none">
-        <button class="tab-btn" role="tab" aria-selected="false" data-mode="signup">注册</button>
-        <button class="tab-btn" role="tab" aria-selected="true" data-mode="signin">登录</button>
+      <div><div class="auth-title" id="authTitle">用户注册</div><div class="auth-desc" id="authDesc">设置用户名、邮箱和密码完成注册。</div></div>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn" role="tab" aria-selected="false" data-mode="signin">账号登录</button>
+        <button class="tab-btn" role="tab" aria-selected="true" data-mode="signup">用户注册</button>
       </div>
     </div>
     <div class="reg-closed-notice" id="regClosedNotice" role="alert" aria-live="polite" style="display:none">
@@ -447,7 +447,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   }, 30000);
 
   const API_BASE = '';
-  const state = { mode: 'signin', loading: false, registerEnabled: false };
+  const state = { mode: 'signup', loading: false, registerEnabled: true };
 
   function setRegisterClosed(closed) {
     state.registerEnabled = !closed;
@@ -512,8 +512,8 @@ button:disabled{opacity:.5;cursor:not-allowed}
     var panel = document.getElementById('authPanel');
     if (panel && !state.registerEnabled) { panel.classList.toggle('signin-active', mode === 'signin'); }
     $$('.tab-btn').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === mode ? 'true' : 'false'));
-    if (mode === 'signup') { authTitle.textContent = '创建用户账户'; authDesc.textContent = '设置用户名、邮箱和密码完成注册。'; submitText.textContent = '创建账户'; }
-    else { authTitle.textContent = '登录账户'; authDesc.textContent = '输入用户名和密码完成登录。'; submitText.textContent = '登录'; }
+    if (mode === 'signup') { authTitle.textContent = '用户注册'; authDesc.textContent = '设置用户名、邮箱和密码完成注册。'; submitText.textContent = '创建账户'; }
+    else { authTitle.textContent = '账号登录'; authDesc.textContent = '输入用户名和密码完成登录。'; submitText.textContent = '登录'; }
     clearMsg();
     var emailField = document.getElementById('emailField'), oldToggle = document.getElementById('oldLoginToggle'), pwField = document.getElementById('passwordField');
     if (mode === 'signup') { if (emailField) emailField.style.display = ''; if (oldToggle) oldToggle.style.display = 'none'; if (pwField) pwField.style.display = ''; }
