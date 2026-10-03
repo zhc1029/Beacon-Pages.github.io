@@ -9,34 +9,40 @@
 *{box-sizing:border-box}
 body{
   margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:#f1f5f9;color:#1e293b;min-height:100vh;
+  background:#0a0a14;color:#f1f5f9;min-height:100vh;position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 0%,rgba(99,102,241,.18),transparent),
+    radial-gradient(ellipse 50% 35% at 85% 100%,rgba(139,92,246,.12),transparent);
 }
 
 /* ── topbar ── */
 .topbar{
-  background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 32px;
+  background:rgba(15,23,42,.85);border-bottom:1px solid #334155;padding:14px 32px;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);position:sticky;top:0;z-index:100;
 }
 .brand{display:flex;align-items:center;gap:10px}
 .brand-icon{
-  width:38px;height:38px;background:linear-gradient(135deg,#f59e0b,#ea580c);border-radius:10px;
+  width:38px;height:38px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(245,158,11,.3);
+  box-shadow:0 2px 8px rgba(99,102,241,.3);
 }
 .brand-icon svg{width:20px;height:20px;fill:#fff}
-.brand-name{font-size:18px;font-weight:800;color:#1e293b}
+.brand-name{font-size:18px;font-weight:800;color:#f1f5f9}
 .brand-sub{font-size:11px;color:#94a3b8;margin-left:6px;font-weight:500}
 .topbar-actions{display:flex;gap:8px;align-items:center}
 #userLabel{font-size:13px;color:#64748b;font-weight:500}
 .topbar-btn{
-  background:#fff;border:1px solid #e2e8f0;color:#334155;padding:8px 16px;
+  background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);color:#334155;padding:8px 16px;
   border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;
   transition:all .2s;white-space:nowrap;
 }
-.topbar-btn:hover{background:#f8fafc;border-color:#cbd5e1}
-.topbar-btn.primary{background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border-color:transparent}
-.topbar-btn.primary:hover{opacity:.92;box-shadow:0 4px 12px rgba(234,88,12,.25)}
+.topbar-btn:hover{background:rgba(30,41,59,.7);border-color:rgba(99,102,241,.35)}
+.topbar-btn.primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-color:transparent}
+.topbar-btn.primary:hover{opacity:.92;box-shadow:0 4px 12px rgba(99,102,241,.25)}
 
 /* ── main container ── */
 .main{max-width:1200px;margin:0 auto;padding:28px 24px 48px}
@@ -57,14 +63,14 @@ body{
 }
 .hero::after{
   content:'';position:absolute;left:15%;bottom:-50px;width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(245,158,11,.08) 0%,transparent 70%);
+  background:radial-gradient(circle,rgba(99,102,241,.08) 0%,transparent 70%);
   pointer-events:none;animation:heroGlow 10s ease-in-out infinite alternate-reverse;
 }
 @keyframes heroGlow{
   0%{transform:translate(0,0) scale(1)}
   100%{transform:translate(15px,-20px) scale(1.1)}
 }
-.hero h1{font-size:26px;font-weight:800;margin:0 0 6px;position:relative;z-index:1;color:#1e293b}
+.hero h1{font-size:26px;font-weight:800;margin:0 0 6px;position:relative;z-index:1;color:#f1f5f9}
 .hero p{font-size:14px;margin:0;position:relative;z-index:1;color:#64748b}
 .hero .uuid-badge{
   display:inline-block;margin-top:10px;padding:4px 12px;
@@ -78,7 +84,7 @@ body{
   position:absolute;inset:0;pointer-events:none;z-index:2;
   background:linear-gradient(-30deg,
     hsla(0,0%,0%,0) 60%,
-    rgba(245,158,11,.5) 70%,
+    rgba(99,102,241,.5) 70%,
     hsla(0,0%,0%,0),
     hsla(0,0%,0%,0) 100%);
   background-size:300% 300%;
@@ -112,8 +118,8 @@ body{
 .magic-spotlight{
   position:fixed;width:640px;height:640px;border-radius:50%;pointer-events:none;z-index:200;
   background:radial-gradient(circle,
-    rgba(245,158,11,.13) 0%,rgba(245,158,11,.07) 18%,rgba(245,158,11,.03) 32%,
-    rgba(245,158,11,.01) 50%,transparent 70%);
+    rgba(99,102,241,.13) 0%,rgba(99,102,241,.07) 18%,rgba(99,102,241,.03) 32%,
+    rgba(99,102,241,.01) 50%,transparent 70%);
   transform:translate(-50%,-50%);mix-blend-mode:multiply;opacity:0;will-change:transform,opacity;
 }
 /* 无障碍：触屏/减少动态效果时仅保留静态边框光晕，关闭聚光灯 */
@@ -126,7 +132,7 @@ body{
   display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.5px;
 }
 .sec-title::after{
-  content:'';flex:1;height:1px;background:#e2e8f0;
+  content:'';flex:1;height:1px;background:#334155;
 }
 
 /* ── cards container ── */
@@ -137,14 +143,14 @@ body{
 
 /* ── generic card ── */
 .card{
-  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;
+  background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:20px 22px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .25s;
 }
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
 
 /* ── network card ── */
 .network-card{
-  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;
+  background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:20px 22px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);transition:box-shadow .25s,border-color .25s;
   display:flex;flex-direction:column;
 }
@@ -165,7 +171,7 @@ body{
 .network-card-icon.cf{background:#fefce8;color:#eab308}
 .network-card-icon.wall{background:#f0fdf4;color:#22c55e}
 .network-card-title-group{display:flex;flex-direction:column;gap:1px}
-.network-card-label{font-size:14px;font-weight:700;color:#1e293b}
+.network-card-label{font-size:14px;font-weight:700;color:#f1f5f9}
 .network-card-sub{font-size:11px;color:#94a3b8;font-weight:500}
 .status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-left:auto}
 .status-dot.loading{background:#f59e0b;animation:pulse 1s infinite}
@@ -173,7 +179,7 @@ body{
 .status-dot.error{background:#ef4444}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .ip-value{
-  font-size:20px;font-weight:700;color:#1e293b;
+  font-size:20px;font-weight:700;color:#f1f5f9;
   font-family:'SF Mono','Monaco','Menlo',monospace;margin-bottom:6px;
 }
 .ip-value.clickable{cursor:pointer}
@@ -184,11 +190,11 @@ body{
 
 /* ── stat card ── */
 .stat-card{
-  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px 20px;
+  background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:22px 20px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);text-align:center;transition:box-shadow .25s,border-color .25s;
 }
 .stat-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.stat-value{font-size:24px;font-weight:800;color:#1e293b;font-family:'SF Mono','Monaco','Menlo',monospace;margin-bottom:4px}
+.stat-value{font-size:24px;font-weight:800;color:#f1f5f9;font-family:'SF Mono','Monaco','Menlo',monospace;margin-bottom:4px}
 .stat-label{font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .stat-sub{font-size:11px;color:#94a3b8;margin-top:4px;font-weight:400}
 .stat-card.accent-green .stat-value{color:#16a34a}
@@ -207,11 +213,11 @@ body{
 .checkin-card .checkin-status{font-size:13px;color:#78716c;margin-bottom:12px}
 .checkin-btn{
   border:none;border-radius:99px;padding:12px 28px;
-  background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;
   font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;
-  box-shadow:0 4px 12px rgba(234,88,12,.25);
+  box-shadow:0 4px 12px rgba(99,102,241,.25);
 }
-.checkin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(234,88,12,.35)}
+.checkin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(99,102,241,.35)}
 .checkin-btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* ── password strength bar ── */
@@ -243,27 +249,27 @@ body{
 
 /* ── link cards ── */
 .link-card{
-  background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;
+  background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:16px 20px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;align-items:center;gap:14px;
   flex-wrap:wrap;transition:box-shadow .25s,border-color .25s;
 }
 .link-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06)}
 .link-label{font-weight:700;font-size:13px;color:#334155;min-width:90px;white-space:nowrap}
 .link-value{
-  flex:1;min-width:200px;font-size:12px;color:#475569;word-break:break-all;
-  font-family:'SF Mono','Monaco','Menlo',monospace;background:#f8fafc;
-  padding:10px 14px;border-radius:10px;border:1px solid #e2e8f0;
+  flex:1;min-width:200px;font-size:12px;color:#94a3b8;word-break:break-all;
+  font-family:'SF Mono','Monaco','Menlo',monospace;background:rgba(30,41,59,.7);
+  padding:10px 14px;border-radius:10px;border:1px solid rgba(99,102,241,.2);
   cursor:pointer;user-select:none;transition:all .2s;
 }
 .link-value.masked{color:transparent;text-shadow:0 0 12px rgba(71,85,105,.8);letter-spacing:2px}
-.link-value.masked:hover{background:#f1f5f9}
+.link-value.masked:hover{background:#0a0a14}
 .link-value:not(.masked){user-select:text}
 .link-btn{
-  background:#fff;color:#334155;border:1px solid #e2e8f0;
+  background:rgba(15,23,42,.85);color:#334155;border:1px solid rgba(99,102,241,.2);
   border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;
   white-space:nowrap;transition:all .2s;
 }
-.link-btn:hover{background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px)}
+.link-btn:hover{background:rgba(30,41,59,.7);border-color:rgba(99,102,241,.35);transform:translateY(-1px)}
 
 /* ── links group ── */
 .links-group{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
@@ -294,22 +300,22 @@ body{
 /* ── 复制订阅地址前的测延迟提示弹窗（浅色）── */
 .latency-mask{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s ease;pointer-events:none}
 .latency-mask.show{opacity:1;pointer-events:auto}
-.latency-dialog{width:100%;max-width:440px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 24px 60px rgba(15,23,42,.22);padding:26px 24px;transform:translateY(12px) scale(.98);transition:transform .22s ease}
+.latency-dialog{width:100%;max-width:440px;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:20px;box-shadow:0 24px 60px rgba(15,23,42,.22);padding:26px 24px;transform:translateY(12px) scale(.98);transition:transform .22s ease}
 .latency-mask.show .latency-dialog{transform:translateY(0) scale(1)}
-.latency-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(245,158,11,.16),rgba(234,88,12,.12));border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
-.latency-title{font-size:18px;font-weight:800;color:#1e293b;margin-bottom:10px}
-.latency-body{font-size:13.5px;line-height:1.7;color:#475569}
+.latency-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(99,102,241,.16),rgba(99,102,241,.12));border:1px solid rgba(99,102,241,.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.latency-title{font-size:18px;font-weight:800;color:#f1f5f9;margin-bottom:10px}
+.latency-body{font-size:13.5px;line-height:1.7;color:#94a3b8}
 .latency-body p{margin:0 0 10px}
-.latency-code{display:flex;align-items:center;gap:8px;margin:10px 0;padding:10px 12px;background:#f8fafc;border:1px dashed #f59e0b;border-radius:10px;color:#c2410c;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;word-break:break-all}
-.latency-code .tag{flex-shrink:0;padding:2px 8px;border-radius:6px;background:rgba(245,158,11,.18);color:#b45309;font-size:11px;font-weight:700}
+.latency-code{display:flex;align-items:center;gap:8px;margin:10px 0;padding:10px 12px;background:rgba(30,41,59,.7);border:1px dashed #f59e0b;border-radius:10px;color:#c2410c;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;word-break:break-all}
+.latency-code .tag{flex-shrink:0;padding:2px 8px;border-radius:6px;background:rgba(99,102,241,.18);color:#b45309;font-size:11px;font-weight:700}
 .latency-code .latency-url{flex:1;min-width:0}
-.latency-copy{flex-shrink:0;border:1px solid #f59e0b;background:rgba(245,158,11,.12);color:#b45309;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
-.latency-copy:hover{background:rgba(245,158,11,.22);border-color:#d97706}
+.latency-copy{flex-shrink:0;border:1px solid #f59e0b;background:rgba(99,102,241,.12);color:#b45309;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.latency-copy:hover{background:rgba(99,102,241,.22);border-color:#d97706}
 .latency-copy.copied{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.45);color:#15803d}
 .latency-note{font-size:12px;color:#64748b;line-height:1.6;margin:10px 0 0}
 .latency-actions{display:flex;gap:10px;margin-top:18px}
-.latency-actions .lbtn{flex:1;justify-content:center;display:inline-flex;align-items:center;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#334155}
-.latency-confirm{background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none}
+.latency-actions .lbtn{flex:1;justify-content:center;display:inline-flex;align-items:center;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid rgba(99,102,241,.2);background:rgba(15,23,42,.85);color:#334155}
+.latency-confirm{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none}
 .latency-confirm[disabled]{opacity:.55;cursor:not-allowed;filter:saturate(.6)}
 .latency-confirm .count{display:inline-block;min-width:18px;text-align:center}
 
@@ -596,7 +602,7 @@ body{
         '<p>本订阅部署在 Cloudflare 上，而 CF Workers 默认<strong style="color:#b45309">不允许访问自身所托管的网络</strong>。多数代理软件默认用 CF 链接测延迟，会导致测延迟全部显示为超时（红），但实际并不影响代理使用。</p>' +
         '<p>请在代理软件的<strong style="color:#c2410c">测延迟 URL / 健康检查地址</strong>处改为下方链接：</p>' +
         '<div class="latency-code"><span class="tag">测延迟</span><span class="latency-url">' + LATENCY_TEST_URL + '</span><button type="button" class="latency-copy" id="latencyCopyUrl">📋 复制</button></div>' +
-        '<p class="latency-note">修改完成后再复制订阅地址导入。请阅读 <strong style="color:#1e293b">' + LATENCY_READ_SECONDS + '</strong> 秒后方可继续复制。</p>' +
+        '<p class="latency-note">修改完成后再复制订阅地址导入。请阅读 <strong style="color:#f1f5f9">' + LATENCY_READ_SECONDS + '</strong> 秒后方可继续复制。</p>' +
       '</div>' +
       '<div class="latency-actions">' +
         '<button type="button" class="lbtn" id="latencyCancel">稍后再说</button>' +
@@ -882,28 +888,28 @@ body{
 	      <div class="sec-title keep">账号安全</div><div class="card" id="changePwCard" style="margin-bottom:24px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div>
-            <div style="font-weight:700;font-size:15px;color:#1e293b;">修改账号密码</div>
+            <div style="font-weight:700;font-size:15px;color:#f1f5f9;">修改账号密码</div>
             <div style="font-size:13px;color:#64748b;margin-top:4px;">修改密码后需重新登录，请妥善保管新密码</div>
           </div>
           <button id="changePwBtn" class="topbar-btn primary" style="flex-shrink:0;">修改密码</button>
         </div>
-        <div id="changePwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
+        <div id="changePwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #334155;">
           <div style="display:grid;gap:12px;">
             <div>
               <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">原密码</label>
               <div style="position:relative">
-                <input type="password" id="changeOldPwInput" placeholder="请输入当前密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <input type="password" id="changeOldPwInput" placeholder="请输入当前密码" maxlength="20" style="width:100%;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:11px 42px 11px 14px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s">
                 <button type="button" id="changeOldPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
               </div>
             </div>
             <div>
               <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">新密码</label>
               <div style="position:relative">
-                <input type="password" id="changeNewPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <input type="password" id="changeNewPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:11px 42px 11px 14px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s">
                 <button type="button" id="changeNewPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
               </div>
               <div id="changePwStrength" style="display:none;margin-top:6px">
-                <div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden">
+                <div style="height:4px;background:#334155;border-radius:2px;overflow:hidden">
                   <div id="changePwStrengthBar" style="height:100%;width:0%;transition:width .3s;border-radius:2px"></div>
                 </div>
                 <span id="changePwStrengthLabel" style="font-size:11px;color:#64748b;margin-top:3px;display:inline-block"></span>
@@ -912,7 +918,7 @@ body{
             <div>
               <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">确认新密码</label>
               <div style="position:relative">
-                <input type="password" id="changeConfirmPwInput" placeholder="请再次输入新密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <input type="password" id="changeConfirmPwInput" placeholder="请再次输入新密码" maxlength="20" style="width:100%;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:11px 42px 11px 14px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s">
                 <button type="button" id="changeConfirmPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
               </div>
             </div>
@@ -929,21 +935,21 @@ body{
       <div class="card" id="securityCard" style="margin-bottom:24px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div>
-            <div style="font-weight:700;font-size:15px;color:#1e293b;">设置账号密码</div>
+            <div style="font-weight:700;font-size:15px;color:#f1f5f9;">设置账号密码</div>
             <div style="font-size:13px;color:#64748b;margin-top:4px;">设置密码后可使用账号密码方式登录，无需邮箱验证</div>
           </div>
           <button id="setPwBtn" class="topbar-btn primary" style="flex-shrink:0;">设置账号密码</button>
         </div>
-        <div id="setPwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
+        <div id="setPwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #334155;">
           <div style="display:grid;gap:12px;">
             <div>
               <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">新密码</label>
               <div style="position:relative">
-                <input type="password" id="setPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <input type="password" id="setPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:11px 42px 11px 14px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s">
                 <button type="button" id="setPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
               </div>
               <div id="setPwStrength" style="display:none;margin-top:6px">
-                <div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden">
+                <div style="height:4px;background:#334155;border-radius:2px;overflow:hidden">
                   <div id="setPwStrengthBar" style="height:100%;width:0%;transition:width .3s;border-radius:2px"></div>
                 </div>
                 <span id="setPwStrengthLabel" style="font-size:11px;color:#64748b;margin-top:3px;display:inline-block"></span>
@@ -952,7 +958,7 @@ body{
             <div>
               <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">确认密码</label>
               <div style="position:relative">
-                <input type="password" id="setConfirmPwInput" placeholder="请再次输入密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <input type="password" id="setConfirmPwInput" placeholder="请再次输入密码" maxlength="20" style="width:100%;background:rgba(15,23,42,.85);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:11px 42px 11px 14px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s">
                 <button type="button" id="setConfirmPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
               </div>
             </div>
@@ -1080,7 +1086,7 @@ body{
 
       <div class="sec-title">⚠️ 使用须知</div>
       <div class="card" style="margin-bottom:24px;border-left:3px solid #f59e0b;">
-        <ul style="margin:0;padding:0 0 0 18px;font-size:13px;color:#475569;line-height:2;">
+        <ul style="margin:0;padding:0 0 0 18px;font-size:13px;color:#94a3b8;line-height:2;">
           <li>本服务节点为固定节点不需要更新也不推荐更新！！！</li>
           <li>本服务仅供个人学习、研究使用</li>
           <li>请勿用于任何商业用途或非法活动</li>
@@ -1088,7 +1094,7 @@ body{
           <li>请合理使用资源，避免频繁请求造成服务不稳定</li>
           <li>管理员保留随时封禁违规账号的权利</li>
         </ul>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;">
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #334155;">
           <div style="font-weight:700;font-size:13px;color:#c2410c;margin-bottom:8px;">⚠️ 使用限制与安全策略</div>
           <div style="display:grid;gap:6px;font-size:12px;color:#64748b;">
             <div>📊 <b>订阅频率限制：</b>6次/小时</div>
@@ -1103,8 +1109,8 @@ body{
       <div class="sec-title">帮助中心</div>
       <div class="card" style="margin-bottom:24px;">
         <details style="margin-bottom:12px;">
-          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#1e293b;">如何设置账号密码？</summary>
-          <div style="margin-top:10px;font-size:13px;color:#475569;line-height:1.8;">
+          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#f1f5f9;">如何设置账号密码？</summary>
+          <div style="margin-top:10px;font-size:13px;color:#94a3b8;line-height:1.8;">
             <p style="margin:0 0 8px;">如果您是存量邮箱登录用户，在用户面板顶部「账号安全」板块中可设置您的专属密码：</p>
             <ol style="margin:0;padding-left:18px;">
               <li>点击「设置账号密码」按钮，展开密码设置表单。</li>
@@ -1124,8 +1130,8 @@ body{
           </div>
         </details>
         <details>
-          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#1e293b;">为什么要设置密码？</summary>
-          <div style="margin-top:10px;font-size:13px;color:#475569;line-height:1.8;">
+          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#f1f5f9;">为什么要设置密码？</summary>
+          <div style="margin-top:10px;font-size:13px;color:#94a3b8;line-height:1.8;">
             <p style="margin:0;">邮箱登录为过渡期临时方案，将在30天后关闭。设置独立密码后，您可以通过账号密码直接登录，无需依赖邮箱验证，更加安全便捷。密码采用 PBKDF2 高强度加密存储，确保您的账户安全。</p>
           </div>
         </details>
@@ -1232,7 +1238,7 @@ body{
 
     [setPwInput, setConfirmPwInput].forEach(function(el) {
       el.addEventListener('focus', function() { el.style.borderColor = '#f59e0b'; });
-      el.addEventListener('blur', function() { el.style.borderColor = '#e2e8f0'; });
+      el.addEventListener('blur', function() { el.style.borderColor = '#334155'; });
     });
 
     function setLoading(v) {
@@ -1363,7 +1369,7 @@ body{
 
     [changeOldPwInput, changeNewPwInput, changeConfirmPwInput].forEach(function(el) {
       el.addEventListener("focus", function() { el.style.borderColor = "#f59e0b"; });
-      el.addEventListener("blur", function() { el.style.borderColor = "#e2e8f0"; });
+      el.addEventListener("blur", function() { el.style.borderColor = "#334155"; });
     });
 
     function setLoading(v) {
