@@ -220,7 +220,8 @@ body::before{
 .checkin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(99,102,241,.35)}
 .checkin-btn:disabled{opacity:.5;cursor:not-allowed}
 
-/* ── password strength bar ── */
+/* ── password strength bar (已禁用) ── */
+#changePwStrengthBar, #changePwStrengthLabel, #setPwStrengthBar, #setPwStrengthLabel{display:none !important;}
 [data-strength="1"]{background:#ef4444}
 [data-strength="2"]{background:#f97316}
 [data-strength="3"]{background:#eab308}
