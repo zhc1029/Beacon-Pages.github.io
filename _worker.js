@@ -37,7 +37,7 @@ function 内存缓存清除用户列表() {
 	内存缓存按前缀清除('list:');
 }
 let SOCKS5白名单 = ['*tapecontent.net', '*cloudatacdn.com', '*loadshare.org', '*cdn-centaurus.com', 'scholar.google.com'];
-const Pages静态页面 = 'https://zhc1029.github.io/Beacon-Pages.github.io';
+const Pages静态页面 = 'https://shuaidaoya.github.io/Beacon-Pages.github.io';
 const 安全配置缓存键 = 'sys.config.json';
 const 安全事件前缀 = 'sys:event:';
 const 安全用户前缀 = 'sys:user:';
