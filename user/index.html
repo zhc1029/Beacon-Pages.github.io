@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Beacon 灯塔 · 用户面板</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#f1f5f9;color:#1e293b;min-height:100vh;
+}
+
+/* ── topbar ── */
+.topbar{
+  background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);position:sticky;top:0;z-index:100;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{
+  width:38px;height:38px;background:linear-gradient(135deg,#f59e0b,#ea580c);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(245,158,11,.3);
+}
+.brand-icon svg{width:20px;height:20px;fill:#fff}
+.brand-name{font-size:18px;font-weight:800;color:#1e293b}
+.brand-sub{font-size:11px;color:#94a3b8;margin-left:6px;font-weight:500}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+#userLabel{font-size:13px;color:#64748b;font-weight:500}
+.topbar-btn{
+  background:#fff;border:1px solid #e2e8f0;color:#334155;padding:8px 16px;
+  border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+}
+.topbar-btn:hover{background:#f8fafc;border-color:#cbd5e1}
+.topbar-btn.primary{background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border-color:transparent}
+.topbar-btn.primary:hover{opacity:.92;box-shadow:0 4px 12px rgba(234,88,12,.25)}
+
+/* ── main container ── */
+.main{max-width:1200px;margin:0 auto;padding:28px 24px 48px}
+
+/* ── hero card (glass) ── */
+.hero{
+  position:relative;overflow:hidden;border-radius:20px;padding:40px 36px;margin-bottom:24px;
+  color:#fff;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 4px 24px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.hero::before{
+  content:'';position:absolute;right:-40px;top:-40px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);
+  pointer-events:none;animation:heroGlow 8s ease-in-out infinite alternate;
+}
+.hero::after{
+  content:'';position:absolute;left:15%;bottom:-50px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,.08) 0%,transparent 70%);
+  pointer-events:none;animation:heroGlow 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes heroGlow{
+  0%{transform:translate(0,0) scale(1)}
+  100%{transform:translate(15px,-20px) scale(1.1)}
+}
+.hero h1{font-size:26px;font-weight:800;margin:0 0 6px;position:relative;z-index:1;color:#1e293b}
+.hero p{font-size:14px;margin:0;position:relative;z-index:1;color:#64748b}
+.hero .uuid-badge{
+  display:inline-block;margin-top:10px;padding:4px 12px;
+  background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06);border-radius:99px;
+  font-size:12px;color:#64748b;font-family:'SF Mono','Monaco','Menlo',monospace;
+  letter-spacing:.5px;position:relative;z-index:1;
+}
+
+/* ── hero glare hover ── */
+.hero-glare{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(-30deg,
+    hsla(0,0%,0%,0) 60%,
+    rgba(245,158,11,.5) 70%,
+    hsla(0,0%,0%,0),
+    hsla(0,0%,0%,0) 100%);
+  background-size:300% 300%;
+  background-repeat:no-repeat;
+  background-position:-100% -100%;
+  transition:background-position 800ms ease;
+}
+.hero:hover .hero-glare{background-position:100% 100%}
+@media(prefers-reduced-motion:reduce){.hero-glare{transition:none}}
+
+/* ── magic bento (悬停增强：边框光晕 + 聚光灯 + 3D倾斜 + 磁吸) ── */
+.magic-card{
+  position:relative;
+  --glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:200px;--glow-color:245,158,11;
+}
+/* borderGlow：跟随鼠标的边框光晕（mask 镂空技法，只照亮边框） */
+.magic-card::after{
+  content:'';position:absolute;inset:0;padding:1px;border-radius:inherit;
+  background:radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--glow-color),calc(var(--glow-intensity) * .9)) 0%,
+    rgba(var(--glow-color),calc(var(--glow-intensity) * .45)) 30%,
+    transparent 60%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;pointer-events:none;opacity:0;
+  transition:opacity .3s ease;z-index:1;
+}
+.magic-card:hover::after{opacity:1}
+/* 全局聚光灯层 */
+.magic-spotlight{
+  position:fixed;width:640px;height:640px;border-radius:50%;pointer-events:none;z-index:200;
+  background:radial-gradient(circle,
+    rgba(245,158,11,.13) 0%,rgba(245,158,11,.07) 18%,rgba(245,158,11,.03) 32%,
+    rgba(245,158,11,.01) 50%,transparent 70%);
+  transform:translate(-50%,-50%);mix-blend-mode:multiply;opacity:0;will-change:transform,opacity;
+}
+/* 无障碍：触屏/减少动态效果时仅保留静态边框光晕，关闭聚光灯 */
+@media(hover:none){.magic-spotlight{display:none}}
+@media(prefers-reduced-motion:reduce){.magic-spotlight{display:none}.magic-card::after{transition:none}}
+
+/* ── section title ── */
+.sec-title{
+  font-size:15px;font-weight:700;color:#334155;margin:0 0 14px;
+  display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.5px;
+}
+.sec-title::after{
+  content:'';flex:1;height:1px;background:#e2e8f0;
+}
+
+/* ── cards container ── */
+.cards-row{display:grid;gap:14px;margin-bottom:24px}
+.cards-row.cols-4{grid-template-columns:repeat(4,1fr)}
+.cards-row.cols-3{grid-template-columns:repeat(3,1fr)}
+.cards-row.cols-2{grid-template-columns:repeat(2,1fr)}
+
+/* ── generic card ── */
+.card{
+  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .25s;
+}
+.card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
+
+/* ── network card ── */
+.network-card{
+  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);transition:box-shadow .25s,border-color .25s;
+  display:flex;flex-direction:column;
+}
+.network-card:hover{
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+  border-color:#f59e0b;
+}
+.network-card-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;
+  border-bottom:1px solid #f1f5f9;
+}
+.network-card-icon{
+  width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:18px;
+}
+.network-card-icon.cn{background:#eff6ff;color:#3b82f6}
+.network-card-icon.overseas{background:#fef2f2;color:#ef4444}
+.network-card-icon.cf{background:#fefce8;color:#eab308}
+.network-card-icon.wall{background:#f0fdf4;color:#22c55e}
+.network-card-title-group{display:flex;flex-direction:column;gap:1px}
+.network-card-label{font-size:14px;font-weight:700;color:#1e293b}
+.network-card-sub{font-size:11px;color:#94a3b8;font-weight:500}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-left:auto}
+.status-dot.loading{background:#f59e0b;animation:pulse 1s infinite}
+.status-dot.success{background:#22c55e}
+.status-dot.error{background:#ef4444}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ip-value{
+  font-size:20px;font-weight:700;color:#1e293b;
+  font-family:'SF Mono','Monaco','Menlo',monospace;margin-bottom:6px;
+}
+.ip-value.clickable{cursor:pointer}
+.ip-value.clickable:hover{color:#f59e0b}
+.ip-location{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;min-height:18px;margin-bottom:6px}
+.country-flag{width:20px;height:14px;border-radius:2px;object-fit:cover;flex-shrink:0}
+.network-tip{font-size:11px;color:#94a3b8}
+
+/* ── stat card ── */
+.stat-card{
+  background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px 20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);text-align:center;transition:box-shadow .25s,border-color .25s;
+}
+.stat-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.stat-value{font-size:24px;font-weight:800;color:#1e293b;font-family:'SF Mono','Monaco','Menlo',monospace;margin-bottom:4px}
+.stat-label{font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.stat-sub{font-size:11px;color:#94a3b8;margin-top:4px;font-weight:400}
+.stat-card.accent-green .stat-value{color:#16a34a}
+.stat-card.accent-blue .stat-value{color:#3b82f6}
+.stat-card.accent-amber .stat-value{color:#f59e0b}
+.stat-card.accent-orange .stat-value{color:#ea580c}
+
+/* ── checkin card ── */
+.checkin-card{
+  background:linear-gradient(135deg,#fffbeb 0%,#fff7ed 100%);
+  border:1px solid #fed7aa;border-radius:16px;padding:24px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);text-align:center;margin-bottom:24px;
+}
+.checkin-card .reward-text{font-size:22px;font-weight:800;color:#c2410c;margin-bottom:6px}
+.checkin-card .checkin-meta{font-size:12px;color:#78716c;margin-bottom:4px}
+.checkin-card .checkin-status{font-size:13px;color:#78716c;margin-bottom:12px}
+.checkin-btn{
+  border:none;border-radius:99px;padding:12px 28px;
+  background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 12px rgba(234,88,12,.25);
+}
+.checkin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(234,88,12,.35)}
+.checkin-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── password strength bar ── */
+[data-strength="1"]{background:#ef4444}
+[data-strength="2"]{background:#f97316}
+[data-strength="3"]{background:#eab308}
+[data-strength="4"]{background:#22c55e}
+[data-strength="5"]{background:#06b6d4}
+
+/* ── spinner ── */
+.spinner{
+  display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;
+  vertical-align:middle;margin-left:6px;
+}
+.spinner.show{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── toast ── */
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;
+  z-index:9999;opacity:0;transition:all .35s ease;pointer-events:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.18);white-space:nowrap;
+}
+.toast.show{opacity:1;top:32px}
+.toast.success{background:#065f46;color:#d1fae5;border:1px solid #059669}
+.toast.error{background:#7f1d1d;color:#fee2e2;border:1px solid #dc2626}
+
+/* ── link cards ── */
+.link-card{
+  background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;align-items:center;gap:14px;
+  flex-wrap:wrap;transition:box-shadow .25s,border-color .25s;
+}
+.link-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.link-label{font-weight:700;font-size:13px;color:#334155;min-width:90px;white-space:nowrap}
+.link-value{
+  flex:1;min-width:200px;font-size:12px;color:#475569;word-break:break-all;
+  font-family:'SF Mono','Monaco','Menlo',monospace;background:#f8fafc;
+  padding:10px 14px;border-radius:10px;border:1px solid #e2e8f0;
+  cursor:pointer;user-select:none;transition:all .2s;
+}
+.link-value.masked{color:transparent;text-shadow:0 0 12px rgba(71,85,105,.8);letter-spacing:2px}
+.link-value.masked:hover{background:#f1f5f9}
+.link-value:not(.masked){user-select:text}
+.link-btn{
+  background:#fff;color:#334155;border:1px solid #e2e8f0;
+  border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:all .2s;
+}
+.link-btn:hover{background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px)}
+
+/* ── links group ── */
+.links-group{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+
+/* ── empty state ── */
+.empty{padding:80px 20px;text-align:center;color:#94a3b8}
+.empty-icon{font-size:56px;margin-bottom:16px}
+.empty h2{font-size:20px;color:#64748b;margin:0 0 8px;font-weight:700}
+.empty p{font-size:14px;margin:0 0 20px}
+
+/* ── responsive ── */
+@media(max-width:1024px){
+  .cards-row.cols-4{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .main{padding:16px 14px 32px}
+  .topbar{padding:12px 16px}
+  .hero{padding:24px 20px}
+  .hero h1{font-size:20px}
+  .cards-row.cols-3{grid-template-columns:1fr}
+  .link-card{flex-direction:column;align-items:flex-start}
+  .link-value{width:100%}
+}
+@media(max-width:480px){
+  .cards-row.cols-4,.cards-row.cols-2{grid-template-columns:1fr}
+}
+
+/* ── 复制订阅地址前的测延迟提示弹窗（浅色）── */
+.latency-mask{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s ease;pointer-events:none}
+.latency-mask.show{opacity:1;pointer-events:auto}
+.latency-dialog{width:100%;max-width:440px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 24px 60px rgba(15,23,42,.22);padding:26px 24px;transform:translateY(12px) scale(.98);transition:transform .22s ease}
+.latency-mask.show .latency-dialog{transform:translateY(0) scale(1)}
+.latency-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(245,158,11,.16),rgba(234,88,12,.12));border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.latency-title{font-size:18px;font-weight:800;color:#1e293b;margin-bottom:10px}
+.latency-body{font-size:13.5px;line-height:1.7;color:#475569}
+.latency-body p{margin:0 0 10px}
+.latency-code{display:flex;align-items:center;gap:8px;margin:10px 0;padding:10px 12px;background:#f8fafc;border:1px dashed #f59e0b;border-radius:10px;color:#c2410c;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;word-break:break-all}
+.latency-code .tag{flex-shrink:0;padding:2px 8px;border-radius:6px;background:rgba(245,158,11,.18);color:#b45309;font-size:11px;font-weight:700}
+.latency-code .latency-url{flex:1;min-width:0}
+.latency-copy{flex-shrink:0;border:1px solid #f59e0b;background:rgba(245,158,11,.12);color:#b45309;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.latency-copy:hover{background:rgba(245,158,11,.22);border-color:#d97706}
+.latency-copy.copied{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.45);color:#15803d}
+.latency-note{font-size:12px;color:#64748b;line-height:1.6;margin:10px 0 0}
+.latency-actions{display:flex;gap:10px;margin-top:18px}
+.latency-actions .lbtn{flex:1;justify-content:center;display:inline-flex;align-items:center;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#334155}
+.latency-confirm{background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none}
+.latency-confirm[disabled]{opacity:.55;cursor:not-allowed;filter:saturate(.6)}
+.latency-confirm .count{display:inline-block;min-width:18px;text-align:center}
+
+/* === 精简模式：只保留修改密码 + 订阅链接 === */
+.sec-title{display:none;}
+.sec-title.keep,.sec-title.keep-sub{display:block;}
+#securityCard{display:none !important;}
+</style>
+<!-- GSAP（MagicBento 悬停增强所需；失败时优雅降级为纯 CSS 边框光晕） -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+  integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+  crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+    <span class="brand-name">Beacon 灯塔</span>
+    <span class="brand-sub">用户面板</span>
+  </div>
+  <div class="topbar-actions">
+    <span id="userLabel"></span>
+    <a href="/" class="topbar-btn">切换账户</a>
+  </div>
+</div>
+
+<div class="main" id="mainContent">
+  <div class="empty" id="emptyState">
+    <div class="empty-icon">🔐</div>
+    <h2>未登录</h2>
+    <p>请先通过认证面板登录以查看您的仪表盘</p>
+    <a href="/" class="topbar-btn primary" style="display:inline-block">前往登录</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ── helpers ──
+  function $(sel) { return document.querySelector(sel); }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtBytes(b) { if (!b||b<=0) return '0 B'; const k=1024,u=['B','KB','MB','GB','TB']; const i=Math.floor(Math.log(b)/Math.log(k)); return parseFloat((b/Math.pow(k,i)).toFixed(1))+' '+u[i]; }
+  function fmtTime(ms) { if (!ms) return '-'; return new Date(ms).toLocaleString('zh-CN', { hour12:false }); }
+
+  function setStatus(id, state) {
+    const el = $(id);
+    if (!el) return;
+    el.className = 'status-dot ' + state;
+  }
+
+  function setIp(id, text) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text || '未知';
+    el.dataset.rawValue = text || '';
+  }
+
+  function setLocation(id, text, flagUrl) {
+    const el = $(id);
+    if (!el) return;
+    let html = '';
+    if (flagUrl) html += '<img class="country-flag" src="'+escAttr(flagUrl)+'" alt=""> ';
+    html += esc(text || '未知');
+    el.innerHTML = html;
+  }
+
+  function setSubtitle(id, text) {
+    const el = $(id);
+    if (el) el.textContent = text || '';
+  }
+
+  // ── fetch helpers ──
+  async function fetchJson(url, timeoutMs) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), timeoutMs || 6000);
+    try {
+      const resp = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!resp.ok) throw new Error('HTTP '+resp.status);
+      return await resp.json();
+    } catch(e) { clearTimeout(t); throw e; }
+  }
+
+  async function fetchTrace(url, timeoutMs) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), timeoutMs || 6000);
+    try {
+      const resp = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!resp.ok) throw new Error('HTTP '+resp.status);
+      const text = await resp.text();
+      const trace = {};
+      text.split('\n').forEach(line => {
+        const idx = line.indexOf('=');
+        if (idx > 0) trace[line.slice(0,idx).trim()] = line.slice(idx+1).trim();
+      });
+      return trace;
+    } catch(e) { clearTimeout(t); throw e; }
+  }
+
+  // ═══════════════════════════════
+  //  1. 国内测试 (CN-Test)
+  // ═══════════════════════════════
+  async function fetchDomestic() {
+    setStatus('#status-ipip', 'loading');
+    try {
+      const data = await fetchJson('https://api.ipapi.is?lang=zh-CN', 5000);
+      const ip = data.ip || '未知';
+      const cc = (data.location?.country_code || '').toLowerCase();
+      const city = data.location?.city || '';
+      const locText = [data.location?.country || '', city].filter(Boolean).join(' ');
+      const flagUrl = cc ? 'https://flagcdn.com/24x18/'+cc+'.png' : '';
+
+      setIp('#ipip-ip', ip);
+      setLocation('#ipip-country', locText, flagUrl);
+      setSubtitle('#ipip-provider', 'ipapi.is');
+      setStatus('#status-ipip', 'success');
+    } catch(e) {
+      try {
+        const trace = await fetchTrace('https://speed.cloudflare.com/cdn-cgi/trace', 4000);
+        setIp('#ipip-ip', trace.ip || '未知');
+        setLocation('#ipip-country', (trace.loc||'') + ' / ' + (trace.colo||''));
+        setSubtitle('#ipip-provider', 'Cloudflare');
+        setStatus('#status-ipip', 'success');
+      } catch(e2) {
+        setIp('#ipip-ip', '加载失败');
+        setStatus('#status-ipip', 'error');
+      }
+    }
+  }
+
+  // ═══════════════════════════════
+  //  2. 国外测试 (漏网之鱼)
+  // ═══════════════════════════════
+  async function fetchOverseas() {
+    setStatus('#status-overseas', 'loading');
+    try {
+      const data = await fetchJson('https://api.cmliussss.net/api/ipinfo?_t='+Date.now(), 5000);
+      const ip = data.ip || '未知';
+      const cc = (data.country_code || '').toLowerCase();
+      const locText = [data.country_code||'', data.asn||'', data.as_name||''].filter(Boolean).join(' ');
+      const flagUrl = cc ? 'https://flagcdn.com/24x18/'+cc+'.png' : '';
+
+      setIp('#overseas-ip', ip);
+      setLocation('#overseas-country', locText, flagUrl);
+      setSubtitle('#overseas-provider', 'cmliussss.net');
+      setStatus('#status-overseas', 'success');
+    } catch(e) {
+      try {
+        const data = await fetchJson('https://api.ipapi.is', 4000);
+        const ip = data.ip || '未知';
+        const cc = (data.location?.country_code || '').toLowerCase();
+        const locText = [data.location?.country_code||'', 'AS'+data.asn?.asn, data.asn?.org].filter(Boolean).join(' ');
+        const flagUrl = cc ? 'https://flagcdn.com/24x18/'+cc+'.png' : '';
+        setIp('#overseas-ip', ip);
+        setLocation('#overseas-country', locText, flagUrl);
+        setSubtitle('#overseas-provider', 'ipapi.is');
+        setStatus('#status-overseas', 'success');
+      } catch(e2) {
+        setIp('#overseas-ip', '加载失败');
+        setStatus('#status-overseas', 'error');
+      }
+    }
+  }
+
+  // ═══════════════════════════════
+  //  3. CloudFlare (ProxyIP)
+  // ═══════════════════════════════
+  async function fetchCloudFlare() {
+    setStatus('#status-cf', 'loading');
+    try {
+      const trace = await fetchTrace('https://speed.cloudflare.com/cdn-cgi/trace', 5000);
+      const ip = trace.ip || '未知';
+      const colo = trace.colo || '';
+      const loc = trace.loc || '';
+
+      setIp('#cf-ip', ip);
+      setLocation('#cf-country', loc + (colo ? ' / ' + colo : ''));
+      setSubtitle('#cf-provider', 'Cloudflare CDN');
+      setStatus('#status-cf', 'success');
+    } catch(e) {
+      setIp('#cf-ip', '加载失败');
+      setStatus('#status-cf', 'error');
+    }
+  }
+
+  // ═══════════════════════════════
+  //  4. 墙外测试 (!CN-Test)
+  // ═══════════════════════════════
+  async function fetchWallTest() {
+    setStatus('#status-twitter', 'loading');
+    try {
+      const data = await fetchJson('https://api.ipapi.is?lang=en', 5000);
+      const ip = data.ip || '未知';
+      const cc = (data.location?.country_code || '').toLowerCase();
+      const org = data.asn?.org || '';
+      const locText = [data.location?.country||'', data.location?.city||'', org].filter(Boolean).join(' · ');
+      const flagUrl = cc ? 'https://flagcdn.com/24x18/'+cc+'.png' : '';
+
+      setIp('#twitter-ip', ip);
+      setLocation('#twitter-country', locText, flagUrl);
+      setSubtitle('#twitter-provider', 'ipapi.is');
+      setStatus('#status-twitter', 'success');
+    } catch(e) {
+      try {
+        const trace = await fetchTrace('https://speed.cloudflare.com/cdn-cgi/trace', 4000);
+        setIp('#twitter-ip', trace.ip || '未知');
+        setLocation('#twitter-country', (trace.loc||'') + ' / ' + (trace.colo||''));
+        setSubtitle('#twitter-provider', 'Cloudflare');
+        setStatus('#status-twitter', 'success');
+      } catch(e2) {
+        setIp('#twitter-ip', '加载失败');
+        setStatus('#status-twitter', 'error');
+      }
+    }
+  }
+
+  // ── load all cards ──
+  function loadNetworkCards() {
+    fetchDomestic();
+    fetchOverseas();
+    fetchCloudFlare();
+    fetchWallTest();
+  }
+
+  // ── global stats ──
+  async function fetchGlobalStats() {
+    try {
+      const resp = await fetch("/api/stats");
+      const data = await resp.json();
+      setText("globalUpValue", data.累计上行 || "--");
+      setText("globalDownValue", data.累计下行 || "--");
+      setText("globalUpDaily", "本日 " + (data.本日上行 || "--"));
+      setText("globalDownDaily", "本日 " + (data.本日下行 || "--"));
+      setText("onlineCount", data.在线人数 != null ? String(data.在线人数) : "--");
+    } catch(e) {
+      setText("globalUpValue", "--");
+      setText("globalDownValue", "--");
+      setText("globalUpDaily", "本日 --");
+      setText("globalDownDaily", "本日 --");
+      setText("onlineCount", "--");
+    }
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  // ── copy helper ──
+  function copy(text, btn) {
+    const orig = btn.textContent;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => { btn.textContent='已复制'; setTimeout(()=>btn.textContent=orig,1500); });
+    } else {
+      const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      btn.textContent='已复制';setTimeout(()=>btn.textContent=orig,1500);
+    }
+  }
+
+  // ── 复制订阅地址前的测延迟提示（5 秒阅读）──
+  var LATENCY_TEST_URL = 'http://www.gstatic.com/generate_204';
+  var LATENCY_READ_SECONDS = 5;
+  function closeLatencyMask() { var m = document.getElementById('latencyMask'); if (!m) return; m.classList.remove('show'); if (m._t) { clearInterval(m._t); m._t = null; } setTimeout(function(){ if (m.parentNode) m.parentNode.removeChild(m); }, 220); }
+  function openLatencyMask(value, btn) {
+    var old = document.getElementById('latencyMask'); if (old) old.remove();
+    var m = document.createElement('div'); m.id = 'latencyMask'; m.className = 'latency-mask';
+    m.innerHTML = '<div class="latency-dialog" role="dialog" aria-modal="true" aria-labelledby="latencyTitle">' +
+      '<div class="latency-icon">⚡</div>' +
+      '<div class="latency-title" id="latencyTitle">复制前请先修改测延迟链接</div>' +
+      '<div class="latency-body">' +
+        '<p>本订阅部署在 Cloudflare 上，而 CF Workers 默认<strong style="color:#b45309">不允许访问自身所托管的网络</strong>。多数代理软件默认用 CF 链接测延迟，会导致测延迟全部显示为超时（红），但实际并不影响代理使用。</p>' +
+        '<p>请在代理软件的<strong style="color:#c2410c">测延迟 URL / 健康检查地址</strong>处改为下方链接：</p>' +
+        '<div class="latency-code"><span class="tag">测延迟</span><span class="latency-url">' + LATENCY_TEST_URL + '</span><button type="button" class="latency-copy" id="latencyCopyUrl">📋 复制</button></div>' +
+        '<p class="latency-note">修改完成后再复制订阅地址导入。请阅读 <strong style="color:#1e293b">' + LATENCY_READ_SECONDS + '</strong> 秒后方可继续复制。</p>' +
+      '</div>' +
+      '<div class="latency-actions">' +
+        '<button type="button" class="lbtn" id="latencyCancel">稍后再说</button>' +
+        '<button type="button" class="lbtn latency-confirm" id="latencyConfirm" disabled><span class="count">' + LATENCY_READ_SECONDS + '</span> 秒后可复制</button>' +
+      '</div></div>';
+    document.body.appendChild(m);
+    requestAnimationFrame(function(){ m.classList.add('show'); });
+    var confirmBtn = m.querySelector('#latencyConfirm'), remaining = LATENCY_READ_SECONDS;
+    m._t = setInterval(function(){ remaining -= 1; if (remaining > 0) { confirmBtn.innerHTML = '<span class="count">' + remaining + '</span> 秒后可复制'; } else { clearInterval(m._t); m._t = null; confirmBtn.disabled = false; confirmBtn.textContent = '我已知晓，复制订阅地址'; } }, 1000);
+    m.querySelector('#latencyCancel').onclick = closeLatencyMask;
+    m.onclick = function(e){ if (e.target === m) closeLatencyMask(); };
+    var copyUrlBtn = m.querySelector('#latencyCopyUrl');
+    copyUrlBtn.onclick = function(){
+      var done = function(){ copyUrlBtn.classList.add('copied'); copyUrlBtn.textContent = '✓ 已复制'; setTimeout(function(){ copyUrlBtn.classList.remove('copied'); copyUrlBtn.textContent = '📋 复制'; }, 1500); };
+      if (navigator.clipboard) { navigator.clipboard.writeText(LATENCY_TEST_URL).then(done); }
+      else { var ta=document.createElement('textarea');ta.value=LATENCY_TEST_URL;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done(); }
+    };
+    confirmBtn.onclick = function(){ if (confirmBtn.disabled) return; copy(value, btn); closeLatencyMask(); };
+  }
+
+  function updateTrafficDisplay(d) {
+    const usedEl = document.getElementById('usedTrafficValue');
+    const totalEl = document.getElementById('totalTrafficValue');
+    if (usedEl) usedEl.textContent = fmtBytes(d.used_traffic || 0);
+    if (totalEl) totalEl.textContent = d.traffic > 0 ? fmtBytes(d.traffic) : '不限';
+  }
+
+  function updateCheckinDisplay(d, msg, isError) {
+    const btn = document.getElementById('checkinBtn');
+    const statusEl = document.getElementById('checkinStatus');
+    const metaEl = document.getElementById('checkinMeta');
+    const checkin = d.checkin || {};
+    const minGB = checkin.minRewardGB || 2;
+    const maxGB = checkin.maxRewardGB || 10;
+    if (metaEl) {
+      const parts = ['每日随机领取 ' + minGB + '-' + maxGB + ' GB'];
+      if (checkin.totalClaimDays) parts.push('累计签到 ' + checkin.totalClaimDays + ' 天');
+      metaEl.textContent = parts.join(' · ');
+    }
+    if (!btn || !statusEl) return;
+    statusEl.style.color = isError ? '#dc2626' : '#78716c';
+    if (!d.uuid || !d.token) {
+      btn.disabled = true;
+      btn.textContent = '无法签到';
+      statusEl.textContent = msg || '缺少用户凭证，请重新登录。';
+      return;
+    }
+    if (checkin.enabled === false || checkin.eligible === false) {
+      btn.disabled = true;
+      btn.textContent = '无需签到';
+      statusEl.textContent = msg || checkin.message || '无限制总配额用户无需签到。';
+      return;
+    }
+    if (checkin.claimedToday) {
+      btn.disabled = true;
+      btn.textContent = '今日已签到';
+      statusEl.textContent = msg || ('今天已领取 ' + fmtBytes(checkin.rewardBytes || 0) + '，下次可签到时间：' + fmtTime(checkin.nextAt));
+      return;
+    }
+    btn.disabled = false;
+    btn.textContent = '签到领流量';
+    statusEl.textContent = msg || (checkin.claimedAt ? ('上次领取 ' + fmtBytes(checkin.rewardBytes || 0) + '，今天还可以再领一次。') : '今天还没签到，点击按钮领取流量。');
+  }
+
+  async function claimDailyCheckin() {
+    const btn = document.getElementById('checkinBtn');
+    const stored = localStorage.getItem('beacon_user');
+    if (!stored) return;
+    let current;
+    try { current = JSON.parse(stored); } catch (e) { return; }
+    if (!current.uuid || !current.token) {
+      updateCheckinDisplay(current, '缺少用户凭证，请重新登录。', true);
+      return;
+    }
+    if (current.checkin && (current.checkin.enabled === false || current.checkin.eligible === false)) {
+      updateCheckinDisplay(current, current.checkin.message || '无限制总配额用户无需签到。');
+      return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '签到中...';
+    }
+    try {
+      const resp = await fetch('/register/checkin?uuid=' + encodeURIComponent(current.uuid) + '&token=' + encodeURIComponent(current.token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const payload = await resp.json().catch(() => ({}));
+      const data = payload.data || {};
+      if (!resp.ok) throw new Error(payload.message || ('HTTP ' + resp.status));
+      const node = data.node || {};
+      const user = data.user || {};
+      const next = {
+        ...current,
+        account: data.account || current.account || '',
+        email: data.email || current.email || '',
+        passwordSet: data.passwordSet != null ? data.passwordSet : current.passwordSet,
+        uuid: node.uuid || current.uuid || '',
+        token: node.token || current.token || '',
+        subUrl: node.subscriptionUrl || current.subUrl || '',
+        verUrl: node.versionUrl || current.verUrl || '',
+        traffic: user.traffic || 0,
+        used_traffic: user.used_traffic || 0,
+        checkin: data.checkin || current.checkin || {},
+      };
+      localStorage.setItem('beacon_user', JSON.stringify(next));
+      updateTrafficDisplay(next);
+      updateCheckinDisplay(next, payload.message || ('签到成功，已领取 ' + fmtBytes(data.rewardBytes || 0) + '。'));
+    } catch (e) {
+      const currentState = current || {};
+      updateCheckinDisplay(currentState, '签到失败：' + (e.message || '未知错误'), true);
+    }
+  }
+
+  async function refreshUserData() {
+    const stored = localStorage.getItem('beacon_user');
+    if (!stored) return;
+    let current;
+    try { current = JSON.parse(stored); } catch (e) { return; }
+    if (!current.uuid || !current.token) return;
+    try {
+      const resp = await fetchJson('/register/user?uuid=' + encodeURIComponent(current.uuid) + '&token=' + encodeURIComponent(current.token) + '&_t=' + Date.now(), 5000);
+      const payload = resp.data || {};
+      const node = payload.node || {};
+      const user = payload.user || {};
+      const next = {
+        ...current,
+        account: payload.account || current.account || '',
+        email: payload.email || current.email || '',
+        passwordSet: payload.passwordSet != null ? payload.passwordSet : current.passwordSet,
+        uuid: node.uuid || current.uuid || '',
+        token: node.token || current.token || '',
+        subUrl: node.subscriptionUrl || current.subUrl || '',
+        verUrl: node.versionUrl || current.verUrl || '',
+        traffic: user.traffic || 0,
+        used_traffic: user.used_traffic || 0,
+        checkin: payload.checkin || current.checkin || {},
+      };
+      localStorage.setItem('beacon_user', JSON.stringify(next));
+      updateTrafficDisplay(next);
+      updateCheckinDisplay(next);
+      fetchGlobalStats();
+      const userLabel = document.getElementById('userLabel');
+      if (userLabel && next.account) userLabel.textContent = next.account;
+    } catch (e) {
+      // Keep the last successful snapshot when refresh fails.
+    }
+  }
+
+  // ── magic bento：展示卡片的悬停增强（边框光晕 + 聚光灯 + 3D倾斜 + 磁吸） ──
+  // 仅作用于展示类卡片（网络/流量/签到/链接），表单卡（含输入框）不参与，避免干扰输入。
+  var MAGIC_GLOW_COLOR = '245,158,11';     // 品牌橙
+  var MAGIC_SPOTLIGHT_RADIUS = 300;
+  var magicSpotlightEl = null;             // 聚光灯层单例（跨多次渲染复用）
+  var magicLiveCards = [];                 // 当前活跃卡片列表（聚光灯计算用，每次渲染刷新）
+  var magicMoveBound = false;              // document mousemove 是否已绑定（全局仅一次）
+
+  function initMagicBento(scope) {
+    var root = scope || document;
+    var cards = root.querySelectorAll('.network-card, .stat-card, .checkin-card, .link-card');
+    if (!cards.length) return;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var canHover = window.matchMedia('(hover:hover)').matches && window.matchMedia('(pointer:fine)').matches;
+    var hasGsap = (typeof gsap !== 'undefined');
+    // GSAP 倾斜/磁吸仅在「能悬停 + 非减少动态 + gsap 可用」时启用
+    var enableTilt = canHover && !reduceMotion && hasGsap;
+    // 聚光灯仅在「能悬停 + 非减少动态」时启用（不依赖 gsap，纯 CSS 变量驱动）
+    var enableSpotlight = canHover && !reduceMotion;
+
+    cards.forEach(function(card){
+      card.classList.add('magic-card');
+      card.style.setProperty('--glow-color', MAGIC_GLOW_COLOR);
+
+      if (!enableTilt) return; // 仅静态边框光晕，无需绑定指针事件
+
+      var magnetAnim = null;
+      card.addEventListener('mouseenter', function(){
+        gsap.to(card, {rotateX:5, rotateY:5, duration:.3, ease:'power2.out', transformPerspective:1000});
+      });
+      card.addEventListener('mousemove', function(e){
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        var cx = rect.width / 2, cy = rect.height / 2;
+        var rotateX = ((y - cy) / cy) * -10;
+        var rotateY = ((x - cx) / cx) * 10;
+        gsap.to(card, {rotateX:rotateX, rotateY:rotateY, duration:.1, ease:'power2.out', transformPerspective:1000});
+        var magnetX = (x - cx) * 0.05, magnetY = (y - cy) * 0.05;
+        magnetAnim = gsap.to(card, {x:magnetX, y:magnetY, duration:.3, ease:'power2.out'});
+      });
+      card.addEventListener('mouseleave', function(){
+        if (magnetAnim) magnetAnim.kill();
+        gsap.to(card, {rotateX:0, rotateY:0, x:0, y:0, duration:.3, ease:'power2.out'});
+      });
+    });
+
+    if (!enableSpotlight) return;
+
+    // 聚光灯层（单例）
+    if (!magicSpotlightEl || !document.body.contains(magicSpotlightEl)) {
+      magicSpotlightEl = document.createElement('div');
+      magicSpotlightEl.className = 'magic-spotlight';
+      document.body.appendChild(magicSpotlightEl);
+    }
+    // 刷新活跃卡片列表（innerHTML 重渲染后旧卡片已随节点销毁，闭包自动引用最新列表）
+    magicLiveCards = Array.prototype.slice.call(root.querySelectorAll('.magic-card'));
+
+    // document mousemove 仅绑定一次（全局聚光灯），靠 magicLiveCards 变量读取最新卡片
+    if (!magicMoveBound) {
+      magicMoveBound = true;
+      var proximity = MAGIC_SPOTLIGHT_RADIUS * 0.5;
+      var fadeDistance = MAGIC_SPOTLIGHT_RADIUS * 0.75;
+      document.addEventListener('mousemove', function(e){
+        var spotlight = magicSpotlightEl;
+        if (!spotlight) return;
+        var live = magicLiveCards;
+        var inside = false;
+        var minDist = Infinity;
+        for (var i = 0; i < live.length; i++){
+          var r = live[i].getBoundingClientRect();
+          if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) inside = true;
+          var ccx = r.left + r.width / 2, ccy = r.top + r.height / 2;
+          var dist = Math.hypot(e.clientX - ccx, e.clientY - ccy) - Math.max(r.width, r.height) / 2;
+          if (dist < minDist) minDist = Math.max(0, dist);
+        }
+        if (!inside && minDist > fadeDistance){
+          if (hasGsap) gsap.to(spotlight, {opacity:0, duration:.5, ease:'power2.out'});
+          else spotlight.style.opacity = 0;
+          live.forEach(function(c){ c.style.setProperty('--glow-intensity', '0'); });
+          return;
+        }
+        // 逐卡计算边框光晕强度（距鼠标越近越亮）
+        live.forEach(function(card){
+          var r = card.getBoundingClientRect();
+          var ccx = r.left + r.width / 2, ccy = r.top + r.height / 2;
+          var dist = Math.hypot(e.clientX - ccx, e.clientY - ccy) - Math.max(r.width, r.height) / 2;
+          var eff = Math.max(0, dist);
+          var intensity = 0;
+          if (eff <= proximity) intensity = 1;
+          else if (eff <= fadeDistance) intensity = (fadeDistance - eff) / (fadeDistance - proximity);
+          var rx = ((e.clientX - r.left) / r.width) * 100;
+          var ry = ((e.clientY - r.top) / r.height) * 100;
+          card.style.setProperty('--glow-x', rx + '%');
+          card.style.setProperty('--glow-y', ry + '%');
+          card.style.setProperty('--glow-intensity', intensity.toString());
+        });
+        // 聚光灯跟随鼠标
+        var targetOpacity = minDist <= proximity ? 0.85
+          : minDist <= fadeDistance ? ((fadeDistance - minDist) / (fadeDistance - proximity)) * 0.85 : 0;
+        if (hasGsap){
+          gsap.to(spotlight, {left:e.clientX, top:e.clientY, duration:.1, ease:'power2.out'});
+          gsap.to(spotlight, {opacity:targetOpacity, duration: targetOpacity > 0 ? .2 : .5, ease:'power2.out'});
+        } else {
+          spotlight.style.left = e.clientX + 'px';
+          spotlight.style.top = e.clientY + 'px';
+          spotlight.style.opacity = targetOpacity;
+        }
+      });
+    }
+  }
+
+  // ── render dashboard ──
+  function renderDashboard(d) {
+    const main = document.getElementById('mainContent');
+    const host = location.origin;
+    const subscriptionUrl = d.subUrl || (d.uuid && d.token ? (host + '/sub?uuid=' + encodeURIComponent(d.uuid) + '&token=' + encodeURIComponent(d.token)) : '');
+    const versionUrl     = d.verUrl || (d.uuid ? (host + '/version?uuid=' + encodeURIComponent(d.uuid)) : '');
+
+    var migrationBanner = '';
+    if (d.passwordSet === false) {
+      migrationBanner = '<div style="margin-top:12px;padding:10px 14px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:10px;font-size:12px;color:#fde68a;position:relative;z-index:1">\u26a0\ufe0f 您的账户尚未设置密码，请尽快在认证面板设置密码以确保账户安全。邮箱登录将在30天后关闭。</div>';
+    }
+    main.innerHTML = `
+      <div class="hero">
+        <div class="hero-glare"></div>
+        <h1>欢迎回来，${esc(d.account || '用户')}</h1>
+        <p>Beacon 灯塔 · 用户面板</p>
+        ${d.uuid ? '<div class="uuid-badge">UUID: ' + esc(d.uuid.slice(0,8) + '...') + '</div>' : ''}
+        ${migrationBanner}
+      </div>
+
+	      <div class="sec-title">账号安全</div>
+	      <div class="sec-title keep">账号安全</div><div class="card" id="changePwCard" style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#1e293b;">修改账号密码</div>
+            <div style="font-size:13px;color:#64748b;margin-top:4px;">修改密码后需重新登录，请妥善保管新密码</div>
+          </div>
+          <button id="changePwBtn" class="topbar-btn primary" style="flex-shrink:0;">修改密码</button>
+        </div>
+        <div id="changePwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
+          <div style="display:grid;gap:12px;">
+            <div>
+              <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">原密码</label>
+              <div style="position:relative">
+                <input type="password" id="changeOldPwInput" placeholder="请输入当前密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <button type="button" id="changeOldPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">新密码</label>
+              <div style="position:relative">
+                <input type="password" id="changeNewPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <button type="button" id="changeNewPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
+              </div>
+              <div id="changePwStrength" style="display:none;margin-top:6px">
+                <div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden">
+                  <div id="changePwStrengthBar" style="height:100%;width:0%;transition:width .3s;border-radius:2px"></div>
+                </div>
+                <span id="changePwStrengthLabel" style="font-size:11px;color:#64748b;margin-top:3px;display:inline-block"></span>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">确认新密码</label>
+              <div style="position:relative">
+                <input type="password" id="changeConfirmPwInput" placeholder="请再次输入新密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <button type="button" id="changeConfirmPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
+              </div>
+            </div>
+          </div>
+          <div id="changePwMsg" style="margin-top:10px;font-size:13px;"></div>
+          <button id="changePwSubmitBtn" class="topbar-btn primary" style="width:100%;margin-top:10px;">
+            <span id="changePwSubmitText">保存新密码</span>
+            <span class="spinner" id="changePwSubmitSpin"></span>
+          </button>
+        </div>
+      </div>
+
+            ${d.passwordSet === false ? `
+      <div class="card" id="securityCard" style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#1e293b;">设置账号密码</div>
+            <div style="font-size:13px;color:#64748b;margin-top:4px;">设置密码后可使用账号密码方式登录，无需邮箱验证</div>
+          </div>
+          <button id="setPwBtn" class="topbar-btn primary" style="flex-shrink:0;">设置账号密码</button>
+        </div>
+        <div id="setPwForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
+          <div style="display:grid;gap:12px;">
+            <div>
+              <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">新密码</label>
+              <div style="position:relative">
+                <input type="password" id="setPwInput" placeholder="8-20位，包含字母、数字及特殊字符" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <button type="button" id="setPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
+              </div>
+              <div id="setPwStrength" style="display:none;margin-top:6px">
+                <div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden">
+                  <div id="setPwStrengthBar" style="height:100%;width:0%;transition:width .3s;border-radius:2px"></div>
+                </div>
+                <span id="setPwStrengthLabel" style="font-size:11px;color:#64748b;margin-top:3px;display:inline-block"></span>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:13px;color:#334155;font-weight:600;display:block;margin-bottom:6px;">确认密码</label>
+              <div style="position:relative">
+                <input type="password" id="setConfirmPwInput" placeholder="请再次输入密码" maxlength="20" style="width:100%;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 42px 11px 14px;color:#1e293b;font-size:14px;outline:none;transition:border .2s">
+                <button type="button" id="setConfirmPwToggle" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;line-height:1">👁</button>
+              </div>
+            </div>
+          </div>
+          <div id="setPwMsg" style="margin-top:10px;font-size:13px;"></div>
+          <button id="setPwSubmitBtn" class="topbar-btn primary" style="width:100%;margin-top:10px;">
+            <span id="setPwSubmitText">保存密码</span>
+            <span class="spinner" id="setPwSubmitSpin"></span>
+          </button>
+        </div>
+      </div>
+      ` : ''}
+
+      <div class="sec-title">当前网络信息</div>
+      <div class="cards-row cols-4">
+        <div class="network-card">
+          <div class="network-card-head">
+            <div class="network-card-icon cn">🌐</div>
+            <div class="network-card-title-group">
+              <div class="network-card-label">国内测试</div>
+              <div class="network-card-sub" id="ipip-provider">CN-Test</div>
+            </div>
+            <span class="status-dot loading" id="status-ipip"></span>
+          </div>
+          <span id="ipip-ip" class="ip-value">-</span>
+          <div class="ip-location"><span id="ipip-country">-</span></div>
+          <div class="network-tip">您访问国内站点所使用的 IP</div>
+        </div>
+
+        <div class="network-card">
+          <div class="network-card-head">
+            <div class="network-card-icon overseas">🌍</div>
+            <div class="network-card-title-group">
+              <div class="network-card-label">国外测试</div>
+              <div class="network-card-sub" id="overseas-provider">漏网之鱼</div>
+            </div>
+            <span class="status-dot loading" id="status-overseas"></span>
+          </div>
+          <span id="overseas-ip" class="ip-value">-</span>
+          <div class="ip-location"><span id="overseas-country">-</span></div>
+          <div class="network-tip">您访问未被封锁的国外站点所使用的 IP</div>
+        </div>
+
+        <div class="network-card">
+          <div class="network-card-head">
+            <div class="network-card-icon cf">☁️</div>
+            <div class="network-card-title-group">
+              <div class="network-card-label">CloudFlare</div>
+              <div class="network-card-sub" id="cf-provider">ProxyIP</div>
+            </div>
+            <span class="status-dot loading" id="status-cf"></span>
+          </div>
+          <span id="cf-ip" class="ip-value">-</span>
+          <div class="ip-location"><span id="cf-country">-</span></div>
+          <div class="network-tip">您访问 CF CDN 站点所使用的落地 IP</div>
+        </div>
+
+        <div class="network-card">
+          <div class="network-card-head">
+            <div class="network-card-icon wall">🔓</div>
+            <div class="network-card-title-group">
+              <div class="network-card-label">墙外测试</div>
+              <div class="network-card-sub" id="twitter-provider">!CN-Test</div>
+            </div>
+            <span class="status-dot loading" id="status-twitter"></span>
+          </div>
+          <span id="twitter-ip" class="ip-value">-</span>
+          <div class="ip-location"><span id="twitter-country">-</span></div>
+          <div class="network-tip">您访问墙外站点所使用的 IP</div>
+        </div>
+      </div>
+
+      <div class="sec-title">流量用量</div>
+      <div class="cards-row cols-3">
+        <div class="stat-card accent-green">
+          <div class="stat-value" id="usedTrafficValue">${fmtBytes(d.used_traffic||0)}</div>
+          <div class="stat-label">个人已用</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalTrafficValue">${d.traffic > 0 ? fmtBytes(d.traffic) : '不限'}</div>
+          <div class="stat-label">个人配额</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-value" id="onlineCount">--</div>
+          <div class="stat-label">在线人数</div>
+        </div>
+      </div>
+      <div class="cards-row cols-2">
+        <div class="stat-card accent-blue">
+          <div class="stat-value" id="globalDownValue">--</div>
+          <div class="stat-label">全站下行</div>
+          <div class="stat-sub" id="globalDownDaily">本日 --</div>
+        </div>
+        <div class="stat-card accent-amber">
+          <div class="stat-value" id="globalUpValue">--</div>
+          <div class="stat-label">全站上行</div>
+          <div class="stat-sub" id="globalUpDaily">本日 --</div>
+        </div>
+      </div>
+
+      <div class="sec-title">每日签到</div>
+      <div class="checkin-card">
+        <div class="reward-text">随机领取 2–10 GB</div>
+        <div class="checkin-meta" id="checkinMeta">每日签到可增加总流量配额</div>
+        <div class="checkin-status" id="checkinStatus">正在检查签到状态...</div>
+        <button id="checkinBtn" type="button" class="checkin-btn">签到领流量</button>
+      </div>
+
+      <div class="sec-title keep-sub">订阅链接</div>
+      <div class="links-group">
+        ${subscriptionUrl ? `
+        <div class="link-card">
+          <span class="link-label">订阅地址</span>
+          <span class="link-value masked" data-full="${escAttr(subscriptionUrl)}" onclick="this.classList.toggle('masked');this.textContent=this.classList.contains('masked')?'点击显示':this.dataset.full">点击显示</span>
+          <button class="link-btn" data-copy="${escAttr(subscriptionUrl)}" data-copy-sub="1">复制</button>
+        </div>` : ''}
+        ${d.uuid ? `
+        <div class="link-card">
+          <span class="link-label">用户 UUID</span>
+          <span class="link-value masked" data-full="${escAttr(d.uuid)}" onclick="this.classList.toggle('masked');this.textContent=this.classList.contains('masked')?'点击显示':this.dataset.full">点击显示</span>
+          <button class="link-btn" data-copy="${escAttr(d.uuid)}">复制</button>
+        </div>` : ''}
+
+      </div>
+
+      <div class="sec-title">⚠️ 使用须知</div>
+      <div class="card" style="margin-bottom:24px;border-left:3px solid #f59e0b;">
+        <ul style="margin:0;padding:0 0 0 18px;font-size:13px;color:#475569;line-height:2;">
+          <li>本服务节点为固定节点不需要更新也不推荐更新！！！</li>
+          <li>本服务仅供个人学习、研究使用</li>
+          <li>请勿用于任何商业用途或非法活动</li>
+          <li>禁止分享、转卖账号或订阅链接给他人</li>
+          <li>请合理使用资源，避免频繁请求造成服务不稳定</li>
+          <li>管理员保留随时封禁违规账号的权利</li>
+        </ul>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;">
+          <div style="font-weight:700;font-size:13px;color:#c2410c;margin-bottom:8px;">⚠️ 使用限制与安全策略</div>
+          <div style="display:grid;gap:6px;font-size:12px;color:#64748b;">
+            <div>📊 <b>订阅频率限制：</b>6次/小时</div>
+            <div>🌐 <b>IP使用限制：</b>6个不同IP/小时，超出自动封禁</div>
+            <div>🔑 <b>无效令牌检测：</b>4次触发告警，达到阈值直接封禁</div>
+            <div>🛡️ <b>路径访问安全：</b>12条/30秒，敏感路径6次上限</div>
+            <div>🤖 <b>用户代理检测：</b>扫描工具（sqlmap/nmap/curl等）自动拦截</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">帮助中心</div>
+      <div class="card" style="margin-bottom:24px;">
+        <details style="margin-bottom:12px;">
+          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#1e293b;">如何设置账号密码？</summary>
+          <div style="margin-top:10px;font-size:13px;color:#475569;line-height:1.8;">
+            <p style="margin:0 0 8px;">如果您是存量邮箱登录用户，在用户面板顶部「账号安全」板块中可设置您的专属密码：</p>
+            <ol style="margin:0;padding-left:18px;">
+              <li>点击「设置账号密码」按钮，展开密码设置表单。</li>
+              <li>输入您的新密码，密码需满足以下要求：
+                <ul style="margin:4px 0 0 18px;">
+                  <li>长度 8-20 位</li>
+                  <li>必须包含字母（大小写均可）</li>
+                  <li>必须包含数字</li>
+                  <li>必须包含至少一个特殊字符（如 @ # $ % 等）</li>
+                </ul>
+              </li>
+              <li>在确认密码框中再次输入相同密码进行确认。</li>
+              <li>密码强度指示条显示为「强」或「很强」后，点击「保存密码」完成设置。</li>
+              <li>设置成功后即可使用「账号 + 密码」方式登录，邮箱登录入口将在过渡期后关闭。</li>
+            </ol>
+            <p style="margin:8px 0 0;color:#94a3b8;">提示：设置密码后，账号安全卡片将自动隐藏。您之后可使用用户名和密码直接登录。</p>
+          </div>
+        </details>
+        <details>
+          <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#1e293b;">为什么要设置密码？</summary>
+          <div style="margin-top:10px;font-size:13px;color:#475569;line-height:1.8;">
+            <p style="margin:0;">邮箱登录为过渡期临时方案，将在30天后关闭。设置独立密码后，您可以通过账号密码直接登录，无需依赖邮箱验证，更加安全便捷。密码采用 PBKDF2 高强度加密存储，确保您的账户安全。</p>
+          </div>
+        </details>
+      </div>
+    `;
+
+    const userLabel = document.getElementById('userLabel');
+    if (userLabel && d.account) userLabel.textContent = d.account;
+
+    main.querySelectorAll('.link-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.getAttribute('data-copy-sub') === '1') { openLatencyMask(btn.dataset.copy, btn); return; }
+        copy(btn.dataset.copy, btn);
+      });
+    });
+    const checkinBtn = document.getElementById('checkinBtn');
+    if (checkinBtn) checkinBtn.addEventListener('click', claimDailyCheckin);
+    updateCheckinDisplay(d);
+
+    loadNetworkCards();
+    wireSetPassword(d);
+    wireChangePassword(d);
+    fetchGlobalStats();
+    initMagicBento(main);   // 展示卡片悬停增强（边框光晕/聚光灯/3D倾斜/磁吸）
+  }
+
+  // ── password strength checker ──
+  function checkPwStrength(pw) {
+    if (!pw) return { score: 0, label: '' };
+    var score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^a-zA-Z0-9]/.test(pw)) score++;
+    var labels = ['', '弱', '较弱', '中等', '强', '很强'];
+    return { score: Math.min(score, 5), label: labels[Math.min(score, 5)] };
+  }
+
+  // ── toast notification ──
+  var toastTimer = null;
+  function showToast(message, type) {
+    var el = document.getElementById('globalToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'globalToast';
+      el.className = 'toast';
+      document.body.appendChild(el);
+    }
+    if (toastTimer) clearTimeout(toastTimer);
+    el.textContent = message;
+    el.className = 'toast ' + (type || 'success') + ' show';
+    toastTimer = setTimeout(function() {
+      el.classList.remove('show');
+    }, 2600);
+  }
+
+  // ── password setting form wiring ──
+  function wireSetPassword(d) {
+    var setPwBtn = document.getElementById('setPwBtn');
+    var setPwForm = document.getElementById('setPwForm');
+    var setPwInput = document.getElementById('setPwInput');
+    var setPwToggle = document.getElementById('setPwToggle');
+    var setPwStrength = document.getElementById('setPwStrength');
+    var setPwStrengthBar = document.getElementById('setPwStrengthBar');
+    var setPwStrengthLabel = document.getElementById('setPwStrengthLabel');
+    var setConfirmPwInput = document.getElementById('setConfirmPwInput');
+    var setConfirmPwToggle = document.getElementById('setConfirmPwToggle');
+    var setPwMsg = document.getElementById('setPwMsg');
+    var setPwSubmitBtn = document.getElementById('setPwSubmitBtn');
+    var setPwSubmitText = document.getElementById('setPwSubmitText');
+    var setPwSubmitSpin = document.getElementById('setPwSubmitSpin');
+    if (!setPwBtn) return;
+
+    setPwBtn.addEventListener('click', function() {
+      setPwForm.style.display = setPwForm.style.display === 'none' ? '' : 'none';
+    });
+
+    var pwVisible = false;
+    setPwToggle.addEventListener('click', function() {
+      pwVisible = !pwVisible;
+      setPwInput.type = pwVisible ? 'text' : 'password';
+      setPwToggle.textContent = pwVisible ? '🙈' : '👁';
+    });
+
+    var confirmVisible = false;
+    setConfirmPwToggle.addEventListener('click', function() {
+      confirmVisible = !confirmVisible;
+      setConfirmPwInput.type = confirmVisible ? 'text' : 'password';
+      setConfirmPwToggle.textContent = confirmVisible ? '🙈' : '👁';
+    });
+
+    setPwInput.addEventListener('input', function() {
+      var result = checkPwStrength(setPwInput.value);
+      if (result.score > 0) {
+        setPwStrength.style.display = '';
+        setPwStrengthBar.style.width = (result.score * 20) + '%';
+        setPwStrengthBar.setAttribute('data-strength', String(result.score));
+        setPwStrengthLabel.textContent = '密码强度：' + result.label;
+      } else {
+        setPwStrength.style.display = 'none';
+      }
+    });
+
+    [setPwInput, setConfirmPwInput].forEach(function(el) {
+      el.addEventListener('focus', function() { el.style.borderColor = '#f59e0b'; });
+      el.addEventListener('blur', function() { el.style.borderColor = '#e2e8f0'; });
+    });
+
+    function setLoading(v) {
+      setPwSubmitBtn.disabled = v;
+      if (v) { setPwSubmitSpin.classList.add('show'); setPwSubmitText.style.opacity = '0.5'; }
+      else   { setPwSubmitSpin.classList.remove('show'); setPwSubmitText.style.opacity = '1'; }
+    }
+
+    setPwSubmitBtn.addEventListener('click', async function() {
+      var pw = setPwInput.value;
+      var cfm = setConfirmPwInput.value;
+      setPwMsg.innerHTML = '';
+      setPwMsg.className = '';
+      if (!pw) {
+        showToast('请输入密码', 'error');
+        return;
+      }
+      if (pw.length < 8 || pw.length > 20) {
+        showToast('密码长度需为 8-20 位', 'error');
+        return;
+      }
+      if (!/[a-zA-Z]/.test(pw)) {
+        showToast('密码必须包含字母', 'error');
+        return;
+      }
+      if (!/[0-9]/.test(pw)) {
+        showToast('密码必须包含数字', 'error');
+        return;
+      }
+      if (!/[^a-zA-Z0-9]/.test(pw)) {
+        showToast('密码必须包含特殊字符（如 @ # $ % 等）', 'error');
+        return;
+      }
+      if (pw !== cfm) {
+        showToast('两次输入的密码不一致', 'error');
+        return;
+      }
+      setLoading(true);
+      try {
+        var resp = await fetch('/register/set-password?uuid=' + encodeURIComponent(d.uuid) + '&token=' + encodeURIComponent(d.token), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw, confirmPassword: cfm })
+        });
+        var payload = await resp.json().catch(function() { return {}; });
+        if (!resp.ok) throw new Error(payload.message || ('HTTP ' + resp.status));
+        showToast('密码设置成功！下次可使用账号密码登录', 'success');
+        setPwForm.style.display = 'none';
+        d.passwordSet = true;
+        var stored = JSON.parse(localStorage.getItem('beacon_user') || '{}');
+        stored.passwordSet = true;
+        localStorage.setItem('beacon_user', JSON.stringify(stored));
+        setTimeout(function() {
+          var card = document.getElementById('securityCard');
+          if (card) {
+            card.style.transition = 'opacity .4s';
+            card.style.opacity = '0';
+            setTimeout(function() { card.style.display = 'none'; }, 400);
+          }
+          var titles = document.querySelectorAll('.sec-title');
+          for (var i = 0; i < titles.length; i++) {
+            if (titles[i].textContent === '账号安全') { titles[i].style.display = 'none'; break; }
+          }
+        }, 1500);
+      } catch (e) {
+        showToast(e.message || '密码设置失败，请稍后重试', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+  }
+
+  // ── password change form wiring ──
+  function wireChangePassword(d) {
+    var changePwBtn = document.getElementById("changePwBtn");
+    var changePwForm = document.getElementById("changePwForm");
+    var changeOldPwInput = document.getElementById("changeOldPwInput");
+    var changeOldPwToggle = document.getElementById("changeOldPwToggle");
+    var changeNewPwInput = document.getElementById("changeNewPwInput");
+    var changeNewPwToggle = document.getElementById("changeNewPwToggle");
+    var changeConfirmPwInput = document.getElementById("changeConfirmPwInput");
+    var changeConfirmPwToggle = document.getElementById("changeConfirmPwToggle");
+    var changePwStrength = document.getElementById("changePwStrength");
+    var changePwStrengthBar = document.getElementById("changePwStrengthBar");
+    var changePwStrengthLabel = document.getElementById("changePwStrengthLabel");
+    var changePwMsg = document.getElementById("changePwMsg");
+    var changePwSubmitBtn = document.getElementById("changePwSubmitBtn");
+    var changePwSubmitText = document.getElementById("changePwSubmitText");
+    var changePwSubmitSpin = document.getElementById("changePwSubmitSpin");
+    if (!changePwBtn) return;
+
+    changePwBtn.addEventListener("click", function() {
+      changePwForm.style.display = changePwForm.style.display === "none" ? "" : "none";
+    });
+
+    var oldPwVisible = false;
+    changeOldPwToggle.addEventListener("click", function() {
+      oldPwVisible = !oldPwVisible;
+      changeOldPwInput.type = oldPwVisible ? "text" : "password";
+      changeOldPwToggle.textContent = oldPwVisible ? "🙈" : "👁";
+    });
+
+    var newPwVisible = false;
+    changeNewPwToggle.addEventListener("click", function() {
+      newPwVisible = !newPwVisible;
+      changeNewPwInput.type = newPwVisible ? "text" : "password";
+      changeNewPwToggle.textContent = newPwVisible ? "🙈" : "👁";
+    });
+
+    var confirmPwVisible = false;
+    changeConfirmPwToggle.addEventListener("click", function() {
+      confirmPwVisible = !confirmPwVisible;
+      changeConfirmPwInput.type = confirmPwVisible ? "text" : "password";
+      changeConfirmPwToggle.textContent = confirmPwVisible ? "🙈" : "👁";
+    });
+
+    changeNewPwInput.addEventListener("input", function() {
+      var result = checkPwStrength(changeNewPwInput.value);
+      if (result.score > 0) {
+        changePwStrength.style.display = "";
+        changePwStrengthBar.style.width = (result.score * 20) + "%";
+        changePwStrengthBar.setAttribute("data-strength", String(result.score));
+        changePwStrengthLabel.textContent = "密码强度：" + result.label;
+      } else {
+        changePwStrength.style.display = "none";
+      }
+    });
+
+    [changeOldPwInput, changeNewPwInput, changeConfirmPwInput].forEach(function(el) {
+      el.addEventListener("focus", function() { el.style.borderColor = "#f59e0b"; });
+      el.addEventListener("blur", function() { el.style.borderColor = "#e2e8f0"; });
+    });
+
+    function setLoading(v) {
+      changePwSubmitBtn.disabled = v;
+      if (v) { changePwSubmitSpin.classList.add("show"); changePwSubmitText.style.opacity = "0.5"; }
+      else   { changePwSubmitSpin.classList.remove("show"); changePwSubmitText.style.opacity = "1"; }
+    }
+
+    changePwSubmitBtn.addEventListener("click", async function() {
+      var oldPw = changeOldPwInput.value;
+      var newPw = changeNewPwInput.value;
+      var cfm = changeConfirmPwInput.value;
+      changePwMsg.innerHTML = "";
+      changePwMsg.className = "";
+      if (!oldPw) {
+        showToast("请输入原密码", "error");
+        return;
+      }
+      if (!newPw) {
+        showToast("请输入新密码", "error");
+        return;
+      }
+      if (newPw.length < 8 || newPw.length > 20) {
+        showToast("新密码长度需为 8-20 位", "error");
+        return;
+      }
+      if (!/[a-zA-Z]/.test(newPw)) {
+        showToast("新密码必须包含字母", "error");
+        return;
+      }
+      if (!/[0-9]/.test(newPw)) {
+        showToast("新密码必须包含数字", "error");
+        return;
+      }
+      if (!/[^a-zA-Z0-9]/.test(newPw)) {
+        showToast("新密码必须包含特殊字符（如 @ # $ % 等）", "error");
+        return;
+      }
+      if (newPw !== cfm) {
+        showToast("两次输入的新密码不一致", "error");
+        return;
+      }
+      setLoading(true);
+      try {
+        var resp = await fetch("/register/change-password?uuid=" + encodeURIComponent(d.uuid) + "&token=" + encodeURIComponent(d.token), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ oldPassword: oldPw, newPassword: newPw, confirmPassword: cfm })
+        });
+        var payload = await resp.json().catch(function() { return {}; });
+        if (!resp.ok) throw new Error(payload.message || ("HTTP " + resp.status));
+        showToast("密码修改成功！请使用新密码重新登录", "success");
+        localStorage.removeItem("beacon_user");
+        var card = document.getElementById("changePwCard");
+        if (card) { card.style.opacity = "0.5"; }
+        setTimeout(function() {
+          window.location.href = "/register";
+        }, 1500);
+      } catch (e) {
+        showToast(e.message || "密码修改失败，请稍后重试", "error");
+      } finally {
+        setLoading(false);
+      }
+    });
+  }
+
+  // ── init ──
+  let initRetries = 0;
+  function tryInit() {
+    const stored = localStorage.getItem('beacon_user');
+    if (stored) {
+      try {
+        renderDashboard(JSON.parse(stored));
+        refreshUserData();
+        setInterval(refreshUserData, 10000);
+        setInterval(fetchGlobalStats, 10000);
+        return true;
+      } catch(e) {}
+    }
+    if (++initRetries < 5) setTimeout(tryInit, 600);
+    return false;
+  }
+  tryInit();
+})();
+</script>
+</body>
+</html>
