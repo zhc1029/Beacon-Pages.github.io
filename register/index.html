@@ -407,7 +407,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
   window.agreeRules = function() { document.getElementById('rulesOverlay').classList.add('hidden'); localStorage.setItem('beacon_rules_agreed', '1'); };
 
   (async function initRules() {
-    localStorage.removeItem('beacon_user');
     try {
       var remembered = JSON.parse(localStorage.getItem('beacon_remembered') || 'null');
       if (remembered && remembered.account) {
