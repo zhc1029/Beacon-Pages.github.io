@@ -875,14 +875,7 @@ body::before{
       migrationBanner = '<div style="margin-top:12px;padding:10px 14px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:10px;font-size:12px;color:#fde68a;position:relative;z-index:1">\u26a0\ufe0f 您的账户尚未设置密码，请尽快在认证面板设置密码以确保账户安全。邮箱登录将在30天后关闭。</div>';
     }
     main.innerHTML = `
-      <div class="hero">
-        <div class="hero-glare"></div>
-        <h1>欢迎回来，${esc(d.account || '用户')}</h1>
-        ${d.uuid ? '<div class="uuid-badge">UUID: ' + esc(d.uuid.slice(0,8) + '...') + '</div>' : ''}
-        ${migrationBanner}
-      </div>
-
-	      <div class="sec-title">账号安全</div>
+      ${migrationBanner}
 	      <div class="sec-title keep">账号安全</div><div class="card" id="changePwCard" style="margin-bottom:24px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div>
