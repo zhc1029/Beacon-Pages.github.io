@@ -1538,7 +1538,7 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 				const confirmPassword = payload.confirmPassword || '';
 				if (!oldPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '原密码不能为空。', null, 400);
 				if (!newPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '新密码不能为空。', null, 400);
-				if (newPassword.length < 8 || newPassword.length > 20) {
+				if (newPassword.length < 1 || newPassword.length > 16) {
 					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '新密码需为1-16位。', null, 400);
 				}
 				}
