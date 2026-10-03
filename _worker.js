@@ -1495,7 +1495,6 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 				if (password.length < 1 || password.length > 16) {
 					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 				}
-				}
 				if (password !== confirmPassword) {
 					return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的密码不一致。', null, 400);
 				}
