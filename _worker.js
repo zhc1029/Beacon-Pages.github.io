@@ -1540,7 +1540,6 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 				if (newPassword.length < 1 || newPassword.length > 16) {
 					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '新密码需为1-16位。', null, 400);
 				}
-				}
 				if (newPassword !== confirmPassword) {
 					return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的新密码不一致。', null, 400);
 				}
@@ -1685,7 +1684,6 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 			if (!token) return 认证JSON响应('AUTH_VALIDATION_ERROR', '重置令牌不能为空。', null, 400);
 			if (!newPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '新密码不能为空。', null, 400);
 			if (newPassword.length < 1 || newPassword.length > 16) return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
-			}
 			if (newPassword !== confirmPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的新密码不一致。', null, 400);
 			const rateLimit = await 安全检查登录速率限制(运行时, 访问IP);
 			if (rateLimit.blocked) return 认证JSON响应('AUTH_RATE_LIMITED', '操作过于频繁，请15分钟后再试。', { retryAfterMs: rateLimit.retryAfterMs }, 429);
