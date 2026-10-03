@@ -1066,12 +1066,7 @@ body::before{
           <span class="link-value masked" data-full="${escAttr(subscriptionUrl)}" onclick="this.classList.toggle('masked');this.textContent=this.classList.contains('masked')?'点击显示':this.dataset.full">点击显示</span>
           <button class="link-btn" data-copy="${escAttr(subscriptionUrl)}" data-copy-sub="1">复制</button>
         </div>` : ''}
-        ${d.uuid ? `
-        <div class="link-card">
-          <span class="link-label">用户 UUID</span>
-          <span class="link-value masked" data-full="${escAttr(d.uuid)}" onclick="this.classList.toggle('masked');this.textContent=this.classList.contains('masked')?'点击显示':this.dataset.full">点击显示</span>
-          <button class="link-btn" data-copy="${escAttr(d.uuid)}">复制</button>
-        </div>` : ''}
+
 
       </div>
 
