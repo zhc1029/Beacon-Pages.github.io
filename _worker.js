@@ -848,8 +848,8 @@ export default {
 					}, 409);
 				}
 				// 密码强度校验（前端已做，后端二次确认）
-				if (!校验结果.password || 校验结果.password.length < 8 || !/[a-z]/.test(校验结果.password) || !/[A-Z]/.test(校验结果.password) || !/[0-9]/.test(校验结果.password) || !/[^a-zA-Z0-9]/.test(校验结果.password)) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码强度不足，需包含大小写字母、数字和特殊符号且长度不少于8位。', null, 400);
+				if (!校验结果.password || 校验结果.password.length < 1 || 校验结果.password.length > 16) {
+					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 				}
 				const hash = await 安全哈希密码(校验结果.password);
 				let labelValue = 校验结果.account;
@@ -993,8 +993,8 @@ export default {
 					}, 409);
 				}
 				// 密码强度校验
-				if (!校验结果.password || 校验结果.password.length < 8 || !/[a-z]/.test(校验结果.password) || !/[A-Z]/.test(校验结果.password) || !/[0-9]/.test(校验结果.password) || !/[^a-zA-Z0-9]/.test(校验结果.password)) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码强度不足，需包含大小写字母、数字和特殊符号且长度不少于8位。', null, 400);
+				if (!校验结果.password || 校验结果.password.length < 1 || 校验结果.password.length > 16) {
+					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 				}
 				// 生成TG验证码
 				const 验证码超时 = 安全数值(当前安全配置.tgSecurityNotifications?.verifyTimeout, 600, 60, 3600);
@@ -1315,8 +1315,8 @@ if (访问路径 === 'register/login' || 访问路径 === 'register/login/') {
 				const migrationToken = payload.migrationToken || '';
 				const password = payload.password || '';
 				if (!password) return 认证JSON响应('AUTH_VALIDATION_ERROR', '密码不能为空。', null, 400);
-				if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需要至少8位，包含字母和数字。', null, 400);
+				if (password.length < 1 || password.length > 16) {
+					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 				}
 				let user = null;
 				if (migrationToken) {
@@ -1492,11 +1492,9 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 				const password = payload.password || '';
 				const confirmPassword = payload.confirmPassword || '';
 				if (!password) return 认证JSON响应('AUTH_VALIDATION_ERROR', '密码不能为空。', null, 400);
-				if (password.length < 8 || password.length > 20) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码长度需为8-20位。', null, 400);
+				if (password.length < 1 || password.length > 16) {
+					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 				}
-				if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需要包含字母、数字及特殊字符。', null, 400);
 				}
 				if (password !== confirmPassword) {
 					return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的密码不一致。', null, 400);
@@ -1541,10 +1539,8 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 				if (!oldPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '原密码不能为空。', null, 400);
 				if (!newPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '新密码不能为空。', null, 400);
 				if (newPassword.length < 8 || newPassword.length > 20) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '新密码长度需为8-20位。', null, 400);
+					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '新密码需为1-16位。', null, 400);
 				}
-				if (!/[a-zA-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^a-zA-Z0-9]/.test(newPassword)) {
-					return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '新密码需要包含字母、数字及特殊字符。', null, 400);
 				}
 				if (newPassword !== confirmPassword) {
 					return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的新密码不一致。', null, 400);
@@ -1689,9 +1685,7 @@ if (访问路径 === 'register/user' || 访问路径 === 'register/user/') {
 			const confirmPassword = String(payload.confirmPassword || '').trim();
 			if (!token) return 认证JSON响应('AUTH_VALIDATION_ERROR', '重置令牌不能为空。', null, 400);
 			if (!newPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '新密码不能为空。', null, 400);
-			if (newPassword.length < 8 || newPassword.length > 20) return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码长度需为8-20位。', null, 400);
-			if (!/[a-zA-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^a-zA-Z0-9]/.test(newPassword)) {
-				return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需要包含字母、数字及特殊字符。', null, 400);
+			if (newPassword.length < 1 || newPassword.length > 16) return 认证JSON响应('AUTH_PASSWORD_TOO_WEAK', '密码需为1-16位。', null, 400);
 			}
 			if (newPassword !== confirmPassword) return 认证JSON响应('AUTH_VALIDATION_ERROR', '两次输入的新密码不一致。', null, 400);
 			const rateLimit = await 安全检查登录速率限制(运行时, 访问IP);
