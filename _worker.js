@@ -567,7 +567,7 @@ function AuthForm校验字段V2(mode, fields) {
 	// 账户名校验
 	if (!account) errors.account = '用户名不能为空';
 	if (normalizedMode === 'signup') {
-		if (account.length < 4 || account.length > 16) errors.account = '用户名需为4-16位';
+		if (account.length < 1 || account.length > 16) errors.account = '用户名需为1-16位';
 		else if (!/^[一-龥a-zA-Z0-9_\-]+$/.test(account)) errors.account = '用户名仅支持中英文、数字、下划线、短横线';
 		else if (/^[0-9]+$/.test(account)) errors.account = '用户名不能为纯数字';
 		else if (/^(.)\1+$/.test(account)) errors.account = '用户名不能为重复字符';
@@ -579,14 +579,10 @@ function AuthForm校验字段V2(mode, fields) {
 	}
 	if (normalizedMode === 'signup') {
 		if (!password) errors.password = '密码不能为空';
-		else if (password.length < 8) errors.password = '密码长度不足，至少需要8位';
-		else if (!/[a-z]/.test(password)) errors.password = '密码需包含小写字母';
-		else if (!/[A-Z]/.test(password)) errors.password = '密码需包含大写字母';
-		else if (!/[0-9]/.test(password)) errors.password = '密码需包含数字';
-		else if (!/[^a-zA-Z0-9]/.test(password)) errors.password = '密码需包含特殊符号（如 @#$%^&*）';
+		else if (password.length < 1 || password.length > 16) errors.password = '密码需为1-16位';
 	} else {
 		if (!password && !email) errors.password = '请输入密码或邮箱';
-		if (password && password.length < 8) errors.password = '密码至少需要8个字符';
+		if (password && (password.length < 1 || password.length > 16)) errors.password = '密码需为1-16位';
 	}
 	return {
 		mode: normalizedMode,
@@ -9988,29 +9984,12 @@ button[disabled]{opacity:.6;cursor:not-allowed}
 </head>
 <body>
 <div class="wrap">
-  <div class="hero">
-    <div class="hero-logo">
-      <div class="hero-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-      <span class="hero-name">Beacon 灯塔</span>
-    </div>
-    <h1 class="hero-slogan">连接世界，自由无界</h1>
-    <p class="hero-desc">基于 Cloudflare Workers 构建的高性能公益网络服务，稳定、快速、免费。</p>
-    <div class="features">
-      <span class="feature-tag"><i class="feature-dot"></i>全球节点覆盖</span>
-      <span class="feature-tag"><i class="feature-dot"></i>多协议支持</span>
-      <span class="feature-tag"><i class="feature-dot"></i>免费使用</span>
-    </div>
-  </div>
 
   <section class="panel auth-panel">
     <div class="auth-head">
       <div>
-        <div class="auth-title" id="auth-title">创建用户账户</div>
-        <div class="auth-desc" id="auth-desc">先完成注册，成功后会自动切换到登录模式。</div>
-      </div>
-      <div class="tabs" role="tablist" aria-label="认证模式切换">
-        <button id="tab-signup" class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="auth-form-panel" data-mode="signup">注册</button>
-        <button id="tab-signin" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="auth-form-panel" data-mode="signin">登录</button>
+        <div class="auth-title" id="auth-title">账号登录</div>
+        <div class="auth-desc" id="auth-desc">请输入您的账号和密码登录。</div>
       </div>
     </div>
     <div id="status-bar" class="status-bar ${registerOpen ? '' : 'show status-closed'}">${!registerOpen ? statusText : ''}</div>
@@ -10018,7 +9997,7 @@ button[disabled]{opacity:.6;cursor:not-allowed}
       <div class="rules-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>使用须知</div>
       <ul class="rules-list">
 	    <li>本服务节点为固定节点不需要更新也不推荐更新！！！</li>
-        <li>本服务为公益性质，仅供个人学习、研究使用</li>
+        <li>本服务仅供个人学习、研究使用</li>
         <li>请勿用于任何商业用途或非法活动</li>
         <li>禁止分享、转卖账号或订阅链接给他人</li>
         <li>请合理使用资源，避免频繁请求造成服务不稳定</li>
@@ -10084,7 +10063,7 @@ button[disabled]{opacity:.6;cursor:not-allowed}
     </div>
   </section>
 
-  <footer class="footer">© 2025 Beacon 灯塔 公益服务 · 为有可用节点而建</footer>
+
 </div>
 <script>
 const AuthForm = {
