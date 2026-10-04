@@ -857,8 +857,8 @@ export default {
 				if (labelValue && /@/.test(labelValue) && !校验结果.email) {
 					校验结果.email = labelValue;
 				}
-				// ── TG验证强制校验：当verifyRequired为true时，要求TG验证后才能完成注册 ──
-				const tgVerifyRequired = 当前安全配置.tgSecurityNotifications?.verifyRequired === true;
+				// ── TG验证已禁用：直接完成注册，不要求TG验证 ──
+				const tgVerifyRequired = false;
 				if (tgVerifyRequired) {
 					// 检查TG Bot配置
 					const TG_TXT2 = await env.KV.get('tg.json');
